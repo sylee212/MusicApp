@@ -2,12 +2,44 @@ import React, { Component } from 'react'
 import { Text, View , SafeAreaView , Pressable } from 'react-native'
 import { LinearGradient } from "expo-linear-gradient";
 import Entypo from '@expo/vector-icons/Entypo';
+import * as AppAuth from 'expo-app-auth';
 
+MainUs3r><
 
+/*
+npx expo run:ios
+npx expo run:android
+
+// if dosent work
+npx expo run:android -D Medium_Phone_API
+*/
 
 const LoginScreen = () =>{
     async function authenticate() {
-            
+        const config = {
+            issuer: "https://accounts.spotify.com",
+
+            // to get client id go to spotify dashboard, settings, 
+            clientId: "3220583b77fa4059b20f9d0debd040e3",
+
+            scopes: 
+            [
+                "user-read-email",
+                "user-library-read",
+                "user-read-recently-played",
+                "user-top-read",
+                "playlist-read-private",
+                "playlist-read-collaborative",
+                "playlist-modify-public" // or "playlist-modify-private"
+            ],
+
+            // get this from the spotify dashboard/ settings/ scroll down 
+            redirectUri: "exp://10.192.4.119:8081/--/spotify-auth-callback"
+        }
+
+
+        const result = await AppAuth.authAsync(config);
+        console.log(result);
     }
 
 
