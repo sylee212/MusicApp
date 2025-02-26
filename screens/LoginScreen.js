@@ -6,8 +6,8 @@ import Entypo from '@expo/vector-icons/Entypo';
 
 
 const LoginScreen = () =>{
-    const authenticate = () => {
-        
+    async function authenticate() {
+            
     }
 
 
