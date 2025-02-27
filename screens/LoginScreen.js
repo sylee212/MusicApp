@@ -1,8 +1,11 @@
-import React, { Component } from 'react'
-import { Text, View , SafeAreaView , Pressable } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import Entypo from '@expo/vector-icons/Entypo';
+import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 /*
 compiles an android or ios app
@@ -15,8 +18,19 @@ npx expo run:android -D Medium_Phone_API
 .\gradlew.bat assembleDebug --stacktrace
 */
 
-const LoginScreen = () =>{
-    async function authenticate() {
+// Spotify OAuth Configuration
+const discovery = {
+  authorizationEndpoint: "https://accounts.spotify.com/authorize",
+  tokenEndpoint: "https://accounts.spotify.com/api/token",
+};
+
+WebBrowser.maybeCompleteAuthSession();
+
+const LoginScreen = () =>
+    {
+    async function authenticate() 
+    {
+          const navigation = useNavigation();
 
         const config = 
         {
@@ -49,7 +63,42 @@ const LoginScreen = () =>{
         // const result = await AppAuth.authAsync(config);
         // console.log(result);
 
-        const [request, response, promptAsync] = AuthSession.useAuthRequest(config);
+        const [request, response, promptAsync] = AuthSession.useAuthRequest(config, discovery);
+    
+        useEffect(() => {
+            const checkTokenValidity = async () => {
+              const accessToken = await AsyncStorage.getItem("token");
+              const expirationDate = await AsyncStorage.getItem("expirationDate");
+        
+              console.log("Access Token:", accessToken);
+              console.log("Expiration Date:", expirationDate);
+        
+              if (accessToken && expirationDate) {
+                const currentTime = Date.now();
+                if (currentTime < parseInt(expirationDate)) {
+                  // Token is still valid
+                  navigation.replace("Main");
+                } else {
+                  // Token expired, remove it from storage
+                  AsyncStorage.removeItem("token");
+                  AsyncStorage.removeItem("expirationDate");
+                }
+              }
+            };
+        
+            checkTokenValidity();
+          }, []);
+        
+          useEffect(() => {
+            if (response?.type === "success") {
+              const { access_token, expires_in } = response.params;
+              const expirationDate = Date.now() + expires_in * 1000;
+        
+              AsyncStorage.setItem("token", access_token);
+              AsyncStorage.setItem("expirationDate", expirationDate.toString());
+              navigation.navigate("Main");
+            }
+          }, [response]);
     }
 
 
