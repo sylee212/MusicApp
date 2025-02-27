@@ -2,21 +2,24 @@ import React, { Component } from 'react'
 import { Text, View , SafeAreaView , Pressable } from 'react-native'
 import { LinearGradient } from "expo-linear-gradient";
 import Entypo from '@expo/vector-icons/Entypo';
-import * as AppAuth from 'expo-app-auth';
-
-MainUs3r><
+import * as AuthSession from "expo-auth-session";
 
 /*
+compiles an android or ios app
 npx expo run:ios
 npx expo run:android
 
 // if dosent work
 npx expo run:android -D Medium_Phone_API
+
+.\gradlew.bat assembleDebug --stacktrace
 */
 
 const LoginScreen = () =>{
     async function authenticate() {
-        const config = {
+
+        const config = 
+        {
             issuer: "https://accounts.spotify.com",
 
             // to get client id go to spotify dashboard, settings, 
@@ -34,12 +37,19 @@ const LoginScreen = () =>{
             ],
 
             // get this from the spotify dashboard/ settings/ scroll down 
-            redirectUri: "exp://10.192.4.119:8081/--/spotify-auth-callback"
+            redirectUri: AuthSession.makeRedirectUri
+            (
+                {
+                native: "exp://10.192.4.119:8081/--/spotify-auth-callback"
+                }
+            ),
         }
 
+        // old uses depreceated library 
+        // const result = await AppAuth.authAsync(config);
+        // console.log(result);
 
-        const result = await AppAuth.authAsync(config);
-        console.log(result);
+        const [request, response, promptAsync] = AuthSession.useAuthRequest(config);
     }
 
 
