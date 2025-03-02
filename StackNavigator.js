@@ -13,16 +13,26 @@ const Tab = createBottomTabNavigator();
 
 function BottomTabs(){
     return (
+        // its a componenet that holds the tabs
         <Tab.Navigator>
             <Tab.Screen
             name="Home"
             component={HomeScreen}
             options = {{
+                // this is the name below the icon
                 tabBarLabel:  "Home",
+
+                // hides the screen header?
                  headerShown: false, 
+
                  tabBarLabelStyle: {color: "white" },
-                 tabBarIcon: ({focused}) => 
-                 focused ? (
+                
+                // the focused is auto provided by react navigation
+                // why must have {}? cause it passes an object
+                // { focused, color, size }.
+                // so what we are doing is destructuring the object and finding tha parameter called focused
+                tabBarIcon: ({focused}) => 
+                focused ? (
                     <Entypo name="home" size={24} color="black" />
                   ) : (
                     <AntDesign name="home" size={24} color="black" />
@@ -50,9 +60,14 @@ function BottomTabs(){
     )
 }
 
+// stack navigator is a stack for screens
+// means if you are on Page A and you go to Page B,
+// stack = [Page A, Page B] pop from back 
 const Stack = createNativeStackNavigator();
 function Navigation(){
     return (
+        // NavigationContainer is the main navigation system
+        // Stack.Navigator is the stack where the screens are placed on top of each other
         <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}} /> 
