@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "MusicApp",
+    "scheme": "com.anonymous.MusicApp",
     "slug": "MusicApp",
     "version": "1.0.0",
     "orientation": "portrait",
